@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "agent-skills",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "description": "Engineering workflow skills covering every phase of software development: spec, plan, build, verify, review, and ship.",
       "source": {
         "source": "local",
