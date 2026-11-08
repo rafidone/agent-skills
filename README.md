@@ -313,7 +313,7 @@ Expected summary lines:
 # tests 22
 # pass 22
 # fail 0
-Trigger tier: 33 positive prompts, 31 ranked first (93.9 percent), 0 failures
+Trigger tier: 33 positive prompts, 33 ranked first (100.0 percent), 0 failures
 ```
 
 Confirm a specific host sees the catalog:

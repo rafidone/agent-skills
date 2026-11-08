@@ -199,7 +199,10 @@ function install(options) {
   }
 
   const hosts = resolveHosts(options.hosts);
-  const relative = (value) => path.relative(process.cwd(), value) || '.';
+  const displayPath = (value) => {
+    const relative = path.relative(process.cwd(), value);
+    return relative && !relative.startsWith('..') ? relative : value;
+  };
 
   for (const host of hosts) {
     const target = targetDirectory(host, options);
@@ -219,7 +222,7 @@ function install(options) {
       const destination = path.join(target, name);
 
       if (fs.existsSync(destination) && !options.force) {
-        process.stdout.write(`skip ${relative(destination)} (already exists; use --force to replace)\n`);
+        process.stdout.write(`skip ${displayPath(destination)} (already exists; use --force to replace)\n`);
         skipped += 1;
         continue;
       }

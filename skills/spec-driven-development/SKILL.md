@@ -1,6 +1,6 @@
 ---
 name: spec-driven-development
-description: Turns a request into a reviewable specification before any code is written. Use when starting a new feature, a significant change, or a bug fix whose requirements, acceptance criteria, or boundaries are unclear.
+description: Turns a request into a reviewable specification before any code is written. Use when starting a new feature, a significant change, or a bug fix whose problem statement, acceptance criteria, non-goals, or boundaries are unclear, or when a vague request needs a test plan.
 license: MIT
 compatibility: opencode, claude-code, cursor, copilot, codex
 metadata:

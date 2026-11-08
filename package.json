@@ -8,16 +8,24 @@
     "skills": "bin/cli.js"
   },
   "files": [
+    ".agents/",
+    ".claude/",
+    ".claude-plugin/",
+    ".codex-plugin/",
+    ".github/",
     "bin/",
-    "skills/",
     "docs/",
+    "evals/",
+    "scripts/",
+    "skills/",
     "agents/",
     "references/",
     "AGENTS.md",
     "CLAUDE.md",
     "CONTRIBUTING.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "plugin.json"
   ],
   "repository": {
     "type": "git",
