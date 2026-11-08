@@ -1,359 +1,271 @@
-# Universal AI Agent Skills
+# Agent Skills
 
-> One engineering workflow, portable across OpenCode, Cursor, Claude Code, and GitHub Copilot.
+Engineering workflow skills for AI coding agents, covering the full path from
+specification to release.
 
-**Universal AI Agent Skills** is a small, portable skills repository. It keeps
-each skill as plain Markdown under `skills/`, exposes it to OpenCode through a
-relative symlink, and provides thin adapters for tools that do not natively load
-`SKILL.md`.
+Agent Skills is a catalog of eleven composable disciplines. Each one encodes a
+single phase of engineering work, the procedure an agent should follow, the
+excuses it should reject, and the checks that prove the work is done. The skills
+are plain Markdown, portable across OpenCode, Claude Code, Cursor, GitHub
+Copilot, and Codex, and they are validated, linted, and evaluated in CI.
 
-The first skill, [`my-first-skill`](skills/my-first-skill/SKILL.md), turns a
-coding agent into a disciplined engineer: specification before code,
-test-driven development, zero lint errors, and evidence before completion.
+The goal is not to give an agent more instructions. It is to give it a smaller
+number of specific instructions with gates that block premature completion.
 
 ## Contents
 
-- [What is in this repository](#what-is-in-this-repository)
-- [How it works across AI tools](#how-it-works-across-ai-tools)
-  - [OpenCode](#opencode)
-  - [Claude Code](#claude-code)
-  - [Cursor](#cursor)
-  - [GitHub Copilot](#github-copilot)
+- [Why this exists](#why-this-exists)
+- [Lifecycle](#lifecycle)
+- [Skill catalog](#skill-catalog)
+- [How routing works](#how-routing-works)
 - [Installation](#installation)
-- [Adding another skill](#adding-another-skill)
-- [Repository conventions](#repository-conventions)
-- [Troubleshooting](#troubleshooting)
+- [Verify the installation](#verify-the-installation)
+- [Repository layout](#repository-layout)
+- [Evals](#evals)
+- [Contributing](#contributing)
 - [License](#license)
 
 ---
 
-## What is in this repository
+## Why this exists
+
+An agent without a workflow optimizes for plausible output. It writes code that
+compiles, skips the failing test, and reports success. The failure is not
+laziness; it is the absence of a contract that says what success means.
+
+Each skill in this repository is a small contract:
+
+- It names the situations where the discipline applies, and the ones where it
+  does not.
+- It gives an ordered procedure with an explicit exit condition.
+- It lists the rationalizations that lead to cutting corners, with the required
+  response to each.
+- It ends with a verification checklist that can be run rather than argued
+  about.
+
+The catalog is deliberately small. Eleven skills that route cleanly beat fifty
+that overlap.
+
+## Lifecycle
 
 ```text
-.
-├── AGENTS.md                     # Always-on routing and repository rules for agents
-├── README.md                     # This file
-├── skills/                       # Canonical skill source
-│   └── my-first-skill/
-│       └── SKILL.md              # The engineering workflow
-└── .opencode/
-    └── skills/
-        └── my-first-skill -> ../../skills/my-first-skill
+  using-agent-skills
+        |
+        |  classifies the task, loads one primary skill
+        v
+  DEFINE
+    spec-driven-development
+    constraint-driven-development
+        |
+        v
+  PLAN
+    planning-and-task-breakdown
+        |
+        v
+  BUILD
+    incremental-implementation
+    test-driven-development
+    debugging-and-error-recovery
+    code-simplification
+        |
+        v
+  VERIFY
+    code-review-and-quality
+        |
+        v
+  SHIP
+    git-workflow-and-versioning
+    shipping-and-launch
 ```
 
-| Path | Role |
-| --- | --- |
-| `skills/` | The only place skill content is authored. This is the source of truth. |
-| `.opencode/skills/` | OpenCode's project discovery path. Contains relative symlinks, not copies. |
-| `AGENTS.md` | Tells agents which skill to load, when to load it, and how to validate changes. |
-| `README.md` | Human-facing overview, compatibility model, and installation instructions. |
+The phases are not a waterfall. Work moves back and forth: a failing test sends
+build back to debugging, a review blocker sends verify back to build, and a spec
+gap sends any phase back to define. What must not happen is a silent phase
+change. Each move is announced and the matching skill is loaded.
 
-### The `my-first-skill` workflow
+## Skill catalog
 
-The skill is language-agnostic and applies to features, bug fixes, refactors,
-test changes, and code review. It enforces five phases:
+| Phase | Skill | Use when the task is asking |
+| --- | --- | --- |
+| Meta | [`using-agent-skills`](skills/using-agent-skills/SKILL.md) | "Which skill applies?" or the request spans several phases |
+| Define | [`spec-driven-development`](skills/spec-driven-development/SKILL.md) | "What are we building, and how will we know it works?" |
+| Define | [`constraint-driven-development`](skills/constraint-driven-development/SKILL.md) | "What standard must this meet, and who enforces it?" |
+| Plan | [`planning-and-task-breakdown`](skills/planning-and-task-breakdown/SKILL.md) | "How do we break this down, and in what order?" |
+| Build | [`incremental-implementation`](skills/incremental-implementation/SKILL.md) | "How do we land this safely in small pieces?" |
+| Build | [`test-driven-development`](skills/test-driven-development/SKILL.md) | "How do we prove this behavior exists?" |
+| Build | [`debugging-and-error-recovery`](skills/debugging-and-error-recovery/SKILL.md) | "Why is this failing, and what is the root cause?" |
+| Build | [`code-simplification`](skills/code-simplification/SKILL.md) | "This works, but it is too complicated." |
+| Verify | [`code-review-and-quality`](skills/code-review-and-quality/SKILL.md) | "Is this change correct, safe, and proven?" |
+| Ship | [`git-workflow-and-versioning`](skills/git-workflow-and-versioning/SKILL.md) | "How do we record this change in history?" |
+| Ship | [`shipping-and-launch`](skills/shipping-and-launch/SKILL.md) | "How do we release this without breaking production?" |
 
-| Phase | Required output |
-| --- | --- |
-| **Spec** | Problem, scope, acceptance criteria, interfaces, failure modes, and a test plan |
-| **Red test** | A failing test that fails for the intended reason |
-| **Implementation** | The minimum production code required to pass the test |
-| **Refactor** | Cleaner code with the test suite still green |
-| **Verification** | Tests, lint, format, type check, and build evidence |
+### What each phase produces
 
-It also includes a **Verification Gates** checklist and an
-**Anti-Rationalization Table** that blocks common excuses for skipping unit
-tests, weakening assertions, or ignoring errors.
+| Phase | Artifact | Proof of completion |
+| --- | --- | --- |
+| Define | A one-page spec with acceptance criteria, non-goals, and failure modes | A reviewer can answer what, for whom, and how we will know it works |
+| Define | A `CONSTRAINTS.md` with measurable thresholds and enforcement points | Every non-negotiable has an automated gate or a named owner |
+| Plan | An ordered task list of vertical slices | Every acceptance criterion maps to a task with a named test |
+| Build | A thin slice, wired end to end | The slice's tests and the adjacent suite are green |
+| Build | A regression test and a minimal fix | The test failed before the fix and passes after it |
+| Build | A diagnosis with a reproduction | The cause is explained and the fix is observed in the failing environment |
+| Build | A smaller diff with unchanged behavior | The suite is green before and after, and the diff is smaller |
+| Verify | A review with severity labels and a decision | Every blocker is resolved and re-verified |
+| Ship | Commits, a changelog, and an annotated tag | Each commit is independently understandable and green |
+| Ship | A rollout plan with abort thresholds | The release was watched for its full window and remains reversible |
 
----
+## How routing works
 
-## How it works across AI tools
+Hosts that implement the Agent Skills specification advertise each skill by its
+`description` and load the body only when a task matches. That makes the
+description the routing signal, and it makes a weak description the most common
+reason a good skill never fires.
 
-The core idea is **author once, adapt at the edges**. Every tool gets a thin
-pointer to the canonical skill; no tool gets a forked copy.
+This repository guards routing in three ways:
 
-| Tool | Native `SKILL.md` support | Discovery mechanism | Adapter in this repository |
-| --- | --- | --- | --- |
-| **OpenCode** | Yes | `.opencode/skills/<skill-id>/SKILL.md` and global skills directories | Native: `.opencode/skills/my-first-skill` symlink |
-| **Claude Code** | Yes | `.claude/skills/<name>/SKILL.md` and personal skills directories | Install a symlink or copy into `.claude/skills` |
-| **Cursor** | No native skill loader | Project `AGENTS.md` and `.cursor/rules/*.mdc` | `AGENTS.md` routing; optional thin rule file |
-| **GitHub Copilot** | No native skill loader | `AGENTS.md` for the coding agent; `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` for the editor | `AGENTS.md` routing; optional instruction file |
+1. **Descriptions are tuned and tested.** Every skill has positive and negative
+   trigger cases. A description that fails to rank is fixed, not excused.
+2. **`AGENTS.md` is always-on context.** It names the catalog and the precedence
+   rules, so an agent working in this repository routes deterministically even
+   when model selection would skip the skill.
+3. **The meta-skill re-routes.** `using-agent-skills` classifies the task by the
+   question it is really asking, loads exactly one primary skill, and announces
+   any phase change.
 
-### OpenCode
-
-OpenCode natively discovers Agent Skills. It searches:
-
-- **Project:** `.opencode/skills`, plus compatibility paths `.claude/skills` and `.agents/skills`
-- **Global:** `~/.config/opencode/skills`, plus `~/.claude/skills` and `~/.agents/skills`
-
-This repository already links the skill into the project path:
-
-```text
-.opencode/skills/my-first-skill -> ../../skills/my-first-skill
-```
-
-OpenCode advertises the skill using its `description` and loads the body only
-when needed. The skill ID is derived from the path, so
-`.opencode/skills/my-first-skill/SKILL.md` has the ID `my-first-skill`. You can
-invoke it explicitly with `@my-first-skill` or let the agent select it from the
-description.
-
-`AGENTS.md` is always-on project context. It instructs the agent to load this
-skill for development tasks, which makes routing deterministic even when the
-model would otherwise skip the skill.
-
-### Claude Code
-
-Claude Code implements the Agent Skills open standard and loads skills from:
-
-- **Project:** `.claude/skills/<name>/SKILL.md`
-- **Personal:** `~/.claude/skills/<name>/SKILL.md`
-
-Claude Code supports symlinked skill folders and watches skill directories for
-changes. It auto-loads a skill when the task matches its `description`, or you
-can invoke it directly with `/my-first-skill`.
-
-Because OpenCode also reads `.claude/skills` as a compatibility path, installing
-the skill there makes it available to both tools.
-
-### Cursor
-
-Cursor does not load `SKILL.md` as a native skill. It reads project rules from
-`AGENTS.md` and `.cursor/rules/*.mdc` (the legacy `.cursorrules` format is
-deprecated). This repository's `AGENTS.md` already routes development tasks to
-the skill, and Cursor's agent mode can read the referenced file.
-
-For deterministic loading, add a thin project rule:
-
-```bash
-mkdir -p .cursor/rules
-cat > .cursor/rules/my-first-skill.mdc <<'RULE'
----
-description: Universal engineering workflow: spec-first, TDD, zero lint errors
-alwaysApply: true
----
-
-For every feature, bug fix, refactor, or test change, read and follow
-`skills/my-first-skill/SKILL.md`. Treat its Core Operating Rules and
-Verification Gates as blocking requirements.
-RULE
-```
-
-Use `globs` instead of `alwaysApply` if you want the rule attached only to
-matching files. You can also mention `@skills/my-first-skill/SKILL.md` directly
-in Cursor Chat.
-
-### GitHub Copilot
-
-Copilot does not load `SKILL.md` natively. Its supported mechanisms are:
-
-- **AGENTS.md** for the Copilot coding agent.
-- **`.github/copilot-instructions.md`** for repository-wide editor instructions.
-- **`.github/instructions/*.instructions.md`** for path-scoped instructions using
-  `applyTo` frontmatter.
-
-This repository's `AGENTS.md` already routes the coding agent to the skill. For
-editor chat and inline suggestions, add a thin instruction file:
-
-```bash
-mkdir -p .github/instructions
-cat > .github/instructions/my-first-skill.instructions.md <<'INSTRUCTIONS'
----
-applyTo: "**"
----
-
-For any feature, bug fix, refactor, or test change, follow the workflow in
-`skills/my-first-skill/SKILL.md`: spec before code, a failing test first,
-minimal implementation, refactor, and zero lint errors. Never mark work complete
-with failing tests or lint errors.
-INSTRUCTIONS
-```
-
-Copilot injects instruction files as text and does not expand file links. If
-your Copilot surface cannot read repository files, mirror the skill's Core
-Operating Rules and Verification Gates into
-`.github/copilot-instructions.md` instead of relying on the path reference.
-
----
+Install [`AGENTS.md`](AGENTS.md) alongside the skills in projects that support
+repository-level agent instructions. It is a pointer, not a second copy of the
+procedures.
 
 ## Installation
 
-### Prerequisites
+The skills are plain directories. Install them by cloning this repository and
+linking the ones you want into your host's discovery path.
 
-- Git.
-- One supported AI tool: OpenCode, Claude Code, Cursor, or GitHub Copilot.
-- Optional: Python 3 with PyYAML to run the frontmatter validation below.
+| Host | Discovery path | Install | Native `SKILL.md` |
+| --- | --- | --- | --- |
+| OpenCode | `.opencode/skills/` or `~/.config/opencode/skills/` | Symlink `skills/` as `.opencode/skills` | Yes |
+| Claude Code | `.claude/skills/` or `~/.claude/skills/` | Link each skill directory | Yes |
+| Codex | `.codex/skills/` or `~/.codex/skills/` | Link each skill directory | Yes |
+| Cursor | `AGENTS.md` and `.cursor/rules/` | Add a thin rule that points into `skills/` | No |
+| GitHub Copilot | `AGENTS.md` and `.github/instructions/` | Add a thin instruction file | No |
 
-### 1. Get the repository
+The full per-host procedure, including global installs and Windows notes, lives
+in [`docs/installation.md`](docs/installation.md). For a first run with no prior
+context, start with [`docs/getting-started.md`](docs/getting-started.md).
 
-```bash
-git clone <repository-url> ai-agent-skills
-cd ai-agent-skills
-```
-
-If you already have the directory, `cd` into it instead.
-
-### 2. OpenCode
-
-Project-scoped discovery is already configured through the checked-in symlink:
+Quick start for OpenCode:
 
 ```bash
-test -f .opencode/skills/my-first-skill/SKILL.md && echo "OpenCode skill ready"
+git clone https://github.com/rafidone/agent-skills.git
+cd agent-skills
+mkdir -p .opencode
+ln -sfn ../skills .opencode/skills
+test -f .opencode/skills/test-driven-development/SKILL.md && echo "OpenCode ready"
 ```
 
-To make the skill available in every project, install it globally:
-
-```bash
-mkdir -p ~/.config/opencode/skills
-ln -sfn "$PWD/skills/my-first-skill" ~/.config/opencode/skills/my-first-skill
-```
-
-No `opencode.json` change is required for the standard paths. If you prefer an
-explicit source, add it to `opencode.jsonc`:
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "skills": ["./skills"]
-}
-```
-
-### 3. Claude Code
-
-Project-scoped install:
+Quick start for Claude Code:
 
 ```bash
 mkdir -p .claude/skills
-ln -sfn ../../skills/my-first-skill .claude/skills/my-first-skill
+for skill in skills/*/; do
+  ln -sfn "../../$skill" ".claude/skills/$(basename "$skill")"
+done
+test -f .claude/skills/test-driven-development/SKILL.md && echo "Claude Code ready"
 ```
 
-Personal install, available in all projects:
+## Verify the installation
+
+The repository ships its own checks. They have no runtime dependencies beyond
+Node.js 20 or newer.
 
 ```bash
-mkdir -p ~/.claude/skills
-ln -sfn "$PWD/skills/my-first-skill" ~/.claude/skills/my-first-skill
+node scripts/validate-skills.js          # skill contract: frontmatter, sections, layout
+node scripts/validate-repo.js            # symlink, manifests, eval coverage, links, hygiene
+node --test scripts/**/*.test.js                     # linter unit tests
+node scripts/run-evals.js --min-rank1 85 # routing eval, fails below 85 percent rank-1
 ```
 
-Claude Code will auto-load the skill from its description, or you can run
-`/my-first-skill` explicitly.
+A correct checkout prints `11 skills, 0 errors, 0 warnings`, then a set of
+repository checks, then a passing test suite, then a trigger tier summary with
+`0 failures`.
 
-### 4. Cursor
-
-Cursor reads the checked-in `AGENTS.md` automatically. For a deterministic
-always-on rule, run the rule creation command in the
-[Cursor section](#cursor) above. The rule is a pointer; the canonical skill
-remains `skills/my-first-skill/SKILL.md`.
-
-### 5. GitHub Copilot
-
-The Copilot coding agent reads the checked-in `AGENTS.md`. For editor
-instructions, run the instruction-file command in the
-[GitHub Copilot section](#github-copilot) above. Keep the adapter short and
-leave the detailed procedure in the canonical skill.
-
-### 6. Verify the installation
-
-Run the checks for the tools you installed:
+To confirm a single host sees the catalog:
 
 ```bash
-# OpenCode project link
-readlink -f .opencode/skills/my-first-skill
-test -f .opencode/skills/my-first-skill/SKILL.md && echo "OpenCode OK"
-
-# Claude Code project link (if installed)
-test -f .claude/skills/my-first-skill/SKILL.md && echo "Claude Code OK"
-
-# Frontmatter and directory/name consistency
-python3 - <<'PY'
-import pathlib, yaml
-for path in pathlib.Path("skills").glob("*/SKILL.md"):
-    text = path.read_text()
-    assert text.startswith("---\n"), f"missing frontmatter: {path}"
-    meta = yaml.safe_load(text.split("---\n", 2)[1])
-    assert meta["name"] == path.parent.name, f"name mismatch: {path}"
-    print(f"OK {path} -> {meta['name']}")
-PY
+readlink -f .opencode/skills
+ls .opencode/skills/*/SKILL.md
 ```
 
-A successful run prints the resolved canonical path and one `OK` line per
-skill.
+## Repository layout
 
----
-
-## Adding another skill
-
-```bash
-# 1. Create the canonical skill
-mkdir -p skills/<skill-name>
-$EDITOR skills/<skill-name>/SKILL.md
-
-# 2. Link it into OpenCode project discovery
-ln -sfn ../../skills/<skill-name> .opencode/skills/<skill-name>
-
-# 3. Optional: link it into Claude Code project discovery
-mkdir -p .claude/skills
-ln -sfn ../../skills/<skill-name> .claude/skills/<skill-name>
+```text
+.
+├── AGENTS.md                 # Routing contract for agents working here
+├── CLAUDE.md                 # Thin pointer for Claude Code
+├── CONTRIBUTING.md           # How to add or change a skill
+├── README.md                 # This file
+├── LICENSE                   # MIT
+├── plugin.json               # Generic plugin manifest
+├── package.json              # Validation scripts, version source of truth
+├── docs/
+│   ├── skill-anatomy.md      # The skill contract enforced by the validator
+│   ├── getting-started.md    # First run per host
+│   ├── installation.md       # Full per-host install and removal
+│   └── comparison.md         # How this pack differs from other approaches
+├── skills/                   # Canonical skill source, one directory per skill
+├── references/               # Shared checklists linked by skills
+├── agents/                   # Review and test personas
+├── .claude/commands/         # Six slash commands for Claude Code
+├── .claude-plugin/           # Claude Code plugin and marketplace manifests
+├── .codex-plugin/            # Codex plugin manifest
+├── .agents/plugins/          # Generic agent marketplace manifest
+├── .opencode/skills          # Relative symlink to ../skills
+├── evals/
+│   ├── cases/                # Trigger and behavioral cases, one file per skill
+│   ├── fixtures/             # Inputs for behavioral cases
+│   └── README.md             # Eval tiers and grading policy
+├── scripts/
+│   ├── lib/skill-lint.js     # Linter implementation and unit tests
+│   ├── validate-skills.js    # Skill contract CLI
+│   ├── validate-repo.js      # Repository integrity CLI
+│   └── run-evals.js          # Trigger and behavioral runner
+└── .github/workflows/        # CI running every gate
 ```
 
-Then register the skill in [`AGENTS.md`](AGENTS.md) and add it to the tables in
-this README. If you use Cursor or Copilot, add a thin adapter that points to the
-new skill.
+## Evals
 
-### Skill anatomy
+The repository tests its skills, not only its Markdown.
 
-```markdown
----
-name: your-skill
-description: What the skill does and when an agent should use it.
-compatibility: opencode, claude-code, chatgpt, generic-llm
-metadata:
-  version: 0.1.0
-  tags:
-    - example
----
-
-# Your Skill
-
-Instructions for the agent.
-```
-
-The directory name is the skill ID. Keep it lowercase `kebab-case` and aligned
-with the frontmatter `name`.
-
----
-
-## Repository conventions
-
-- **One source of truth.** Author in `skills/`; never fork content into adapter
-  paths.
-- **Relative symlinks only.** Use `../../skills/<name>` so the repository works
-  after cloning to another machine.
-- **One skill per directory.** Do not nest skills inside other skills.
-- **Description is the routing signal.** State what the skill does and when to
-  use it. The optional `trigger` list is portable metadata; keep it aligned with
-  the description.
-- **Self-contained skills.** Assume the reader cannot see the rest of the
-  repository.
-- **No placeholders.** A finished skill contains no `TODO`, ellipses, or
-  unfilled sections.
-- **Update the routing layer.** When you add or rename a skill, update
-  `AGENTS.md`, this README, and any adapters in the same change.
-
----
-
-## Troubleshooting
-
-| Symptom | Likely cause | Fix |
+| Tier | What it checks | Runs in CI |
 | --- | --- | --- |
-| OpenCode does not list the skill | The file is not named exactly `SKILL.md`, the directory is wrong, or the skill has no `description` | Confirm `.opencode/skills/my-first-skill/SKILL.md`, add a description, and restart or reload OpenCode |
-| OpenCode loads the wrong skill | Duplicate skill IDs across `.opencode/skills`, `.claude/skills`, or global paths | Keep one canonical link per ID; OpenCode prefers the later project source |
-| Claude Code does not auto-load | The task does not match the description, or the skill is not in `.claude/skills` | Invoke `/my-first-skill` explicitly, or refine the description |
-| Cursor ignores the skill | Cursor is not in agent mode, or the rule has not been added | Add the `.cursor/rules` rule, use agent mode, or mention `@skills/my-first-skill/SKILL.md` |
-| Copilot ignores the skill | Instruction files do not resolve file links, or the surface cannot read repository files | Rely on the coding agent with `AGENTS.md`, or mirror the core rules into the instruction file |
-| Symlinks are broken after cloning | Absolute links were used, or the clone did not preserve symlinks | Recreate relative links; on Windows, enable developer mode or copy the directory instead |
-| Frontmatter validation fails | Invalid YAML, missing delimiters, or a directory/name mismatch | Compare with `skills/my-first-skill/SKILL.md` and fix the reported path |
+| Structural | Frontmatter, required sections, naming, layout, line budget, manifests, links | Yes |
+| Trigger | The intended skill ranks top-k for natural prompts, and negative prompts do not fire it | Yes |
+| Behavioral | An agent following the skill satisfies its expectations | On demand |
 
----
+The trigger tier is deterministic and costs nothing. It catches the two routing
+failures that matter most: a description missing the words users actually type,
+and an over-broad description that outranks the right skill. The behavioral tier
+runs through a headless agent and is graded against observed actions, not the
+agent's self-report.
+
+See [`evals/README.md`](evals/README.md) for the case schema and grading policy.
+
+## Contributing
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) and
+[`docs/skill-anatomy.md`](docs/skill-anatomy.md) before adding a skill. In short:
+
+1. Open an issue describing the discipline and why the existing catalog does not
+   cover it.
+2. Write the skill against the anatomy contract.
+3. Add a trigger eval case with at least three positive and two negative prompts.
+4. Add a behavioral case if the skill is in the core set.
+5. Register it in `AGENTS.md`, this README, and the manifest docs.
+6. Run every gate and include the output in the pull request.
+
+The repository accepts a smaller catalog over a larger one. A new skill must
+remove a decision an agent would otherwise get wrong, not restate advice the
+model already knows.
 
 ## License
 
