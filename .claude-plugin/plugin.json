@@ -1,6 +1,6 @@
 {
   "name": "agent-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Engineering workflow skills for AI coding agents, covering the path from specification to release.",
   "author": {
     "name": "Rafid Hasan"
