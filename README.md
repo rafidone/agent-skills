@@ -129,6 +129,7 @@ and the matching skill is loaded.
 | Repository validator | [`scripts/validate-repo.js`](scripts/validate-repo.js): symlink, manifests, eval coverage, links, hygiene |
 | Eval harness | [`scripts/run-evals.js`](scripts/run-evals.js): deterministic trigger tier plus opt-in behavioral tier |
 | Eval corpus | 33 positive prompts, 22 negative prompts, 10 behavioral cases across 5 core skills |
+| Installer | [`bin/cli.js`](bin/cli.js): dependency-free `npx agent-skills` runner that copies skills into project or personal host directories |
 | Extensibility | A new skill is a directory, an eval case, and one routing row; tooling discovers the rest |
 | Commands | Six Claude Code slash commands: `/spec`, `/plan`, `/build`, `/test`, `/review`, `/ship` |
 | Personas | Code reviewer and test engineer, each with a fixed output format |
@@ -146,7 +147,9 @@ and the matching skill is loaded.
 ├── README.md                     # This document
 ├── LICENSE                       # MIT
 ├── plugin.json                   # Generic plugin manifest
-├── package.json                  # Version source of truth and npm scripts
+├── package.json                  # Version source of truth, npm scripts, and binaries
+├── bin/
+│   └── cli.js                    # npx installer for host skill directories
 ├── docs/
 │   ├── skill-anatomy.md          # The skill contract enforced by the linter
 │   ├── getting-started.md        # Clone to first routed task
@@ -230,17 +233,37 @@ the repository's own checks.
 
 ## Quick Start
 
-### 1. Clone the Catalog
+### 1. Install with npx
+
+The fastest path installs the catalog into the current project:
+
+```bash
+npx skills add rafidone/agent-skills
+```
+
+The installer copies every skill into the discovery paths your host reads. To
+target a specific host or directory with the bundled runner:
+
+```bash
+npx agent-skills add rafidone/agent-skills --host opencode
+npx agent-skills add rafidone/agent-skills --host claude --dir /path/to/project
+npx agent-skills add --host all --personal
+```
+
+Run `npx agent-skills --help` for all flags, or `npx agent-skills list` to see
+the bundled skills.
+
+### 2. Clone the Catalog
+
+Choose a stable location. Other projects link to it rather than copying, so
+updates arrive with a single `git pull`.
 
 ```bash
 git clone https://github.com/rafidone/agent-skills.git
 cd agent-skills
 ```
 
-Keep the checkout in a stable location. Other projects link to it rather than
-copying, so updates arrive with a single `git pull`.
-
-### 2. Install for Your Host
+### 3. Install for Your Host
 
 OpenCode discovers a directory of skills, so one relative symlink installs the
 whole catalog:
@@ -271,7 +294,7 @@ ln -sfn "$AGENT_SKILLS/skills" .opencode/skills
 The complete matrix, including personal installs, Windows notes, updating, and
 removal, is in [`docs/installation.md`](docs/installation.md).
 
-### 3. Verify the Installation
+### 4. Verify the Installation
 
 Run the repository gates:
 
@@ -300,7 +323,7 @@ readlink -f .opencode/skills
 ls .opencode/skills/*/SKILL.md
 ```
 
-### 4. Run Your First Routed Task
+### 5. Run Your First Routed Task
 
 Open a session in the project and submit a normal feature request:
 

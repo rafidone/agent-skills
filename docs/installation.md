@@ -2,11 +2,30 @@
 
 The skills are plain directories containing a `SKILL.md`. Installing one means
 making that directory visible to your host's discovery path. There is no build
-step and no runtime dependency for using the skills; Node.js is needed only to
-run this repository's validation scripts.
+step for using the skills; Node.js 20 or newer is needed for the `npx` installer
+and for this repository's validation scripts.
 
 Prefer symlinks over copies. A symlink keeps the catalog as the single source of
 truth, so `git pull` updates every installed project at once.
+
+## Install with npx
+
+The quickest install copies the bundled catalog into the current project:
+
+```bash
+npx skills add rafidone/agent-skills
+```
+
+To choose the host or target directory explicitly with the bundled runner:
+
+```bash
+npx agent-skills add rafidone/agent-skills --host opencode
+npx agent-skills add rafidone/agent-skills --host all --dir /path/to/project
+npx agent-skills add --host claude --personal
+```
+
+Copied installs do not update when the catalog changes. Rerun the command, or
+use the symlink workflow below to track the clone.
 
 ## Host support
 

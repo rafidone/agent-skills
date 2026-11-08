@@ -1,9 +1,40 @@
 {
   "name": "agent-skills",
   "version": "1.0.2",
-  "private": true,
   "description": "Engineering workflow skills for AI coding agents, covering the path from specification to release.",
   "license": "MIT",
+  "bin": {
+    "agent-skills": "bin/cli.js",
+    "skills": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "docs/",
+    "agents/",
+    "references/",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafidone/agent-skills.git"
+  },
+  "keywords": [
+    "agent-skills",
+    "ai-agents",
+    "coding-agents",
+    "opencode",
+    "claude-code",
+    "codex",
+    "software-engineering"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "validate": "node scripts/validate-skills.js && node scripts/validate-repo.js",
     "test": "node --test scripts/**/*.test.js",
