@@ -1,0 +1,13 @@
+{
+  "name": "agent-skills",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Engineering workflow skills for AI coding agents, covering the path from specification to release.",
+  "license": "MIT",
+  "scripts": {
+    "validate": "node scripts/validate-skills.js && node scripts/validate-repo.js",
+    "test": "node --test scripts/**/*.test.js",
+    "evals": "node scripts/run-evals.js --min-rank1 85",
+    "check": "npm run validate && npm test && npm run evals"
+  }
+}

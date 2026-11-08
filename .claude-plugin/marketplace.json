@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "rafidone-agent-skills",
+  "description": "Engineering workflow skills for AI coding agents, covering the path from specification to release.",
+  "owner": {
+    "name": "Rafid Hasan",
+    "url": "https://github.com/rafidone"
+  },
+  "plugins": [
+    {
+      "name": "agent-skills",
+      "version": "1.0.0",
+      "source": {
+        "source": "github",
+        "repo": "rafidone/agent-skills"
+      },
+      "description": "Engineering workflow skills covering specification, planning, implementation, testing, review, and release.",
+      "homepage": "https://github.com/rafidone/agent-skills",
+      "license": "MIT",
+      "keywords": [
+        "skills",
+        "agents",
+        "engineering",
+        "spec",
+        "tdd",
+        "review",
+        "ship"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "agent-skills",
+  "version": "1.0.0",
+  "description": "Engineering workflow skills for AI coding agents, covering the path from specification to release.",
+  "author": {
+    "name": "Rafid Hasan",
+    "url": "https://github.com/rafidone"
+  },
+  "homepage": "https://github.com/rafidone/agent-skills",
+  "repository": "https://github.com/rafidone/agent-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Skills",
+    "shortDescription": "Engineering workflows for AI coding agents: spec, plan, build, test, review, ship.",
+    "longDescription": "Agent Skills bundles eleven engineering workflows covering requirements, quality bars, planning, incremental delivery, test-driven development, debugging, simplification, review, version control, and release.",
+    "developerName": "Rafid Hasan",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Help me choose the right engineering workflow for this task",
+      "Plan and implement this change using the relevant Agent Skills"
+    ]
+  }
+}

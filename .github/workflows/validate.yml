@@ -1,0 +1,31 @@
+name: validate
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate skill structure
+        run: node scripts/validate-skills.js
+
+      - name: Validate repository integrity
+        run: node scripts/validate-repo.js
+
+      - name: Run linter tests
+        run: node --test scripts/**/*.test.js
+
+      - name: Run trigger evals
+        run: node scripts/run-evals.js --min-rank1 85

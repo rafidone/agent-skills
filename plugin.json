@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "agent-skills",
+  "version": "1.0.0",
+  "description": "Engineering workflow skills for AI coding agents, covering the path from specification to release.",
+  "author": {
+    "name": "Rafid Hasan",
+    "url": "https://github.com/rafidone"
+  },
+  "homepage": "https://github.com/rafidone/agent-skills",
+  "repository": "https://github.com/rafidone/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "agents",
+    "engineering",
+    "spec",
+    "tdd",
+    "review",
+    "ship"
+  ]
+}
