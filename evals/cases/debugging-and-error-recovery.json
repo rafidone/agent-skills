@@ -1,0 +1,15 @@
+{
+  "skill_name": "debugging-and-error-recovery",
+  "trigger": {
+    "positive": [
+      { "prompt": "This test fails intermittently in CI; find the root cause.", "top_k": 3 },
+      { "prompt": "A production error appears in the logs and a restart hides it.", "top_k": 3 },
+      { "prompt": "My previous fix did not hold and the same bug came back.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Write the specification for this new endpoint.", "owner": "spec-driven-development" },
+      { "prompt": "Create a release plan with a rollback and watch window.", "owner": "shipping-and-launch" }
+    ]
+  },
+  "evals": []
+}

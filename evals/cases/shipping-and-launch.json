@@ -1,0 +1,15 @@
+{
+  "skill_name": "shipping-and-launch",
+  "trigger": {
+    "positive": [
+      { "prompt": "Plan the production rollout with success metrics and abort thresholds.", "top_k": 3 },
+      { "prompt": "We are publishing a package; confirm readiness and the rollback procedure.", "top_k": 3 },
+      { "prompt": "Enable the feature flag for ten percent of users and watch the error rate.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Write the spec for the release tooling.", "owner": "spec-driven-development" },
+      { "prompt": "Create the commit and tag for this version.", "owner": "git-workflow-and-versioning" }
+    ]
+  },
+  "evals": []
+}

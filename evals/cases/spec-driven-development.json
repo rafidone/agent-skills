@@ -1,0 +1,43 @@
+{
+  "skill_name": "spec-driven-development",
+  "trigger": {
+    "positive": [
+      { "prompt": "We need a specification for the new billing portal before anyone writes code.", "top_k": 3 },
+      { "prompt": "I have a vague feature request and need clear acceptance criteria and non-goals.", "top_k": 3 },
+      { "prompt": "Turn this bug report into a written problem statement with a test plan.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "This test fails intermittently. Find the root cause.", "owner": "debugging-and-error-recovery" },
+      { "prompt": "Break this finished spec into ordered tasks.", "owner": "planning-and-task-breakdown" }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write the specification for notification preferences. Users choose email, push, or both for each category. Cover acceptance criteria, non-goals, failure modes, and a test plan, but do not write code.",
+      "expected_output": "A reviewable specification with observable acceptance criteria, explicit non-goals, defined failure modes, and a test plan that maps every criterion to a test.",
+      "files": ["spec-driven-development"],
+      "expectations": [
+        "The response states the problem and the user-visible outcome before any design detail",
+        "The response lists explicit non-goals, including at least one plausible feature that is out of scope",
+        "Every acceptance criterion is observable and testable, with no adjectives such as fast or clean left unmeasured",
+        "Failure modes are listed with a defined response for each, including an invalid category and a save failure",
+        "The test plan maps each acceptance criterion to a named test rather than saying add tests",
+        "The response does not write production code"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Skip the spec, just start coding the notification preferences feature. We need it today and writing requirements will slow us down.",
+      "expected_output": "A short but complete specification still exists before code, with the pressure acknowledged and the risk of skipping it stated plainly.",
+      "files": ["spec-driven-development"],
+      "expectations": [
+        "The response does not begin implementation without a written contract",
+        "The specification is compressed to fit the time pressure rather than omitted",
+        "Acceptance criteria and non-goals are still present",
+        "The response states the concrete rework risk of skipping the spec",
+        "The response does not claim the work is complete"
+      ]
+    }
+  ]
+}

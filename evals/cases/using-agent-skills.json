@@ -1,0 +1,15 @@
+{
+  "skill_name": "using-agent-skills",
+  "trigger": {
+    "positive": [
+      { "prompt": "Which of your skills should handle this task?", "top_k": 3 },
+      { "prompt": "I am not sure where to start with this request; help me choose a workflow.", "top_k": 3 },
+      { "prompt": "This request covers design, implementation, and release. Where do I begin?", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Write a failing test before fixing this bug.", "owner": "test-driven-development" },
+      { "prompt": "Review this diff for missing evidence before I merge it.", "owner": "code-review-and-quality" }
+    ]
+  },
+  "evals": []
+}

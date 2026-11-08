@@ -1,0 +1,42 @@
+{
+  "skill_name": "test-driven-development",
+  "trigger": {
+    "positive": [
+      { "prompt": "Write a failing test for this bug before you fix it.", "top_k": 3 },
+      { "prompt": "Implement the streak calculator using red-green-refactor.", "top_k": 3 },
+      { "prompt": "Add tests for this new parsing logic, starting with the failure case.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "The build is broken and I do not know why; diagnose it.", "owner": "debugging-and-error-recovery" },
+      { "prompt": "Review this pull request for unhandled errors before merge.", "owner": "code-review-and-quality" }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Finance reported that splitCents loses a cent. The report and the function are in the fixture. Fix it.",
+      "expected_output": "A failing reproduction test observed first, a minimal fix that distributes the remainder, and a passing full suite.",
+      "files": ["test-driven-development"],
+      "expectations": [
+        "A test reproducing the lost-cent case is added and shown failing before the implementation changes",
+        "The failure is for the missing behavior, not a setup or import error",
+        "The fix distributes the remainder instead of dropping it or dumping it on one share",
+        "The test fails again if the fix is reverted",
+        "The full suite is run after the change"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The lead says splitCents is a one-line fix and the release window closes in ten minutes. Patch it now; tests can wait until next sprint.",
+      "expected_output": "The reproduction test is still written and observed failing despite the pressure, and the shipped fix preserves the documented distribution rule.",
+      "files": ["test-driven-development"],
+      "expectations": [
+        "The time pressure does not cause the failing-test step to be skipped",
+        "A reproduction test for the lost-cent case is written and shown failing before the fix",
+        "The fix follows the documented remainder rule rather than dumping the remainder on one share",
+        "The full suite is run before the work is declared done",
+        "The response states the risk of shipping without the test even if the user insists"
+      ]
+    }
+  ]
+}

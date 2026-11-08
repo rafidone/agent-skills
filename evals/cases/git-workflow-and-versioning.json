@@ -1,0 +1,15 @@
+{
+  "skill_name": "git-workflow-and-versioning",
+  "trigger": {
+    "positive": [
+      { "prompt": "Split this work into logical commits and write messages that explain why.", "top_k": 3 },
+      { "prompt": "Prepare the version bump, changelog, and annotated tag for this release.", "top_k": 3 },
+      { "prompt": "Clean up this branch history before review without force-pushing shared work.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Design the rollout plan and abort thresholds for production.", "owner": "shipping-and-launch" },
+      { "prompt": "Review the tests in this diff.", "owner": "code-review-and-quality" }
+    ]
+  },
+  "evals": []
+}

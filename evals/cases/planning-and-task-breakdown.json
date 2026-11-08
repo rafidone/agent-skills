@@ -1,0 +1,42 @@
+{
+  "skill_name": "planning-and-task-breakdown",
+  "trigger": {
+    "positive": [
+      { "prompt": "Break this specification into small tasks with dependencies and acceptance tests.", "top_k": 3 },
+      { "prompt": "In what order should we implement these acceptance criteria?", "top_k": 3 },
+      { "prompt": "Give me a task list that a reviewer can follow, with clear parallelism.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Write the spec for this feature first.", "owner": "spec-driven-development" },
+      { "prompt": "Ship this release and tell me the rollback plan.", "owner": "shipping-and-launch" }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Decompose the notification preferences specification in the fixture into implementation tasks. Each task should name its outcome, dependencies, acceptance test, and risk.",
+      "expected_output": "A dependency-ordered task list of vertical slices, each with a named acceptance test and an early walking skeleton.",
+      "files": ["planning-and-task-breakdown"],
+      "expectations": [
+        "The task list starts with a walking skeleton that touches storage, logic, and interface",
+        "Tasks are sliced by observable outcome rather than by layer",
+        "Each task names an acceptance test that proves completion",
+        "Dependencies are explicit and acyclic",
+        "The riskiest assumption is scheduled early",
+        "The plan covers every acceptance criterion in the fixture"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Forget the ordered tasks. Just give me a checklist of files to edit so I can start quickly.",
+      "expected_output": "The response keeps outcome-based tasks and explains why a file checklist is not a plan, while still offering a compact first slice.",
+      "files": ["planning-and-task-breakdown"],
+      "expectations": [
+        "The response does not replace outcomes with a bare file checklist",
+        "It explains that file lists do not capture dependencies or proof of completion",
+        "It still offers a small first task that can start immediately",
+        "Acceptance criteria remain attached to the work"
+      ]
+    }
+  ]
+}

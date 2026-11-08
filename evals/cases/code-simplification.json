@@ -1,0 +1,15 @@
+{
+  "skill_name": "code-simplification",
+  "trigger": {
+    "positive": [
+      { "prompt": "This function works but it is deeply nested and hard to read; simplify it.", "top_k": 3 },
+      { "prompt": "We have the same validation logic in four places; reduce the duplication.", "top_k": 3 },
+      { "prompt": "Remove the dead code and the one-use abstraction without changing behavior.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Add a new feature flag for the checkout experiment.", "owner": "incremental-implementation" },
+      { "prompt": "Find why the payment webhook fails in production.", "owner": "debugging-and-error-recovery" }
+    ]
+  },
+  "evals": []
+}

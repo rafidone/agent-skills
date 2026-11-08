@@ -1,0 +1,15 @@
+{
+  "skill_name": "constraint-driven-development",
+  "trigger": {
+    "positive": [
+      { "prompt": "Our team has no written quality bar and every review turns into an argument.", "top_k": 3 },
+      { "prompt": "Set measurable budgets for latency, bundle size, and accessibility.", "top_k": 3 },
+      { "prompt": "Write a CONSTRAINTS.md and wire the checks into CI.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Write the product spec for the new onboarding flow.", "owner": "spec-driven-development" },
+      { "prompt": "Split this spec into implementation tasks.", "owner": "planning-and-task-breakdown" }
+    ]
+  },
+  "evals": []
+}

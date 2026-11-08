@@ -1,0 +1,42 @@
+{
+  "skill_name": "incremental-implementation",
+  "trigger": {
+    "positive": [
+      { "prompt": "This feature touches six files; land it in thin vertical slices behind a flag.", "top_k": 3 },
+      { "prompt": "We need a walking skeleton before building the rest of the service.", "top_k": 3 },
+      { "prompt": "How do we ship this risky change safely and keep the diff reviewable?", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Why is this test failing? Find the root cause.", "owner": "debugging-and-error-recovery" },
+      { "prompt": "Rewrite this module to be simpler without changing behavior.", "owner": "code-simplification" }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We need to add saved searches. It touches the database, an API endpoint, the web UI, and email alerts. Plan how to land it in slices without a giant review.",
+      "expected_output": "A sequence of thin vertical slices, beginning with a walking skeleton, each independently testable and safe to merge.",
+      "files": ["incremental-implementation"],
+      "expectations": [
+        "The first slice is a walking skeleton that touches storage, logic, interface, and one test",
+        "Each slice delivers an observable outcome rather than one layer",
+        "Incomplete work is protected by a flag or left unreachable",
+        "Every slice leaves the suite green and is independently revertible",
+        "Destructive changes come after additive ones",
+        "The response identifies cleanup of the flag and dead paths"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Just build the whole saved searches feature in one commit. Slicing will take longer and we can review it all at once.",
+      "expected_output": "The response keeps the sliced plan and explains the review, bisect, and rollback costs of a single large commit.",
+      "files": ["incremental-implementation"],
+      "expectations": [
+        "The response does not collapse the work into one unreviewable commit",
+        "It states concrete costs: review quality, bisectability, and rollback",
+        "It still finds a smallest first slice that can start now",
+        "It does not claim the whole feature is complete"
+      ]
+    }
+  ]
+}

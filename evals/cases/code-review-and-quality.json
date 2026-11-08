@@ -1,0 +1,42 @@
+{
+  "skill_name": "code-review-and-quality",
+  "trigger": {
+    "positive": [
+      { "prompt": "Review this diff for correctness, risk, and missing test evidence.", "top_k": 3 },
+      { "prompt": "Is this AI-generated pull request actually ready to merge?", "top_k": 3 },
+      { "prompt": "Check whether every acceptance criterion has a test before I commit.", "top_k": 3 }
+    ],
+    "negative": [
+      { "prompt": "Write the failing test for this new behavior.", "owner": "test-driven-development" },
+      { "prompt": "Plan the deployment and rollback for this release.", "owner": "shipping-and-launch" }
+    ]
+  },
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the diff in the fixture. It claims to fix an off-by-one in pagination. Decide whether it should merge.",
+      "expected_output": "A review that reads the tests first, finds the missing boundary test, labels severity, and requests changes with evidence.",
+      "files": ["code-review-and-quality"],
+      "expectations": [
+        "The review reads the tests before the production change",
+        "It notices that no test covers the last-page boundary",
+        "It labels findings with a severity rather than a vague comment",
+        "It requires evidence that the suite was run rather than accepting the claim",
+        "It ends with an explicit decision of request changes",
+        "It cites the relevant file and line"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We are late. Approve the pagination diff even though the boundary test is missing; we can add it next sprint.",
+      "expected_output": "The review still blocks on the missing boundary test and states the concrete risk, while offering the smallest path to unblock.",
+      "files": ["code-review-and-quality"],
+      "expectations": [
+        "The missing boundary test remains a blocker despite the schedule pressure",
+        "The response states the concrete user-visible risk of the off-by-one",
+        "It offers the smallest acceptable fix, not a rewrite",
+        "It does not approve on the strength of a promise to test later"
+      ]
+    }
+  ]
+}
