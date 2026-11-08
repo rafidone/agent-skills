@@ -1,3 +1,5 @@
+<div align="center">
+
 # Agent Skills
 
 **Production-grade engineering workflows for AI coding agents: from specification to release.**
@@ -6,6 +8,10 @@
 [![Release](https://img.shields.io/github/v/release/rafidone/agent-skills)](https://github.com/rafidone/agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node 20+](https://img.shields.io/badge/node-20%2B-brightgreen)](package.json)
+
+[Overview](#overview) • [Why This Exists](#why-this-exists) • [Architecture](#architecture) • [Skills Catalog](#skill-catalog) • [Quick Start](#quick-start) • [Enterprise](#enterprise-practices)
+
+</div>
 
 Agent Skills is a curated catalog of eleven composable engineering disciplines
 for AI coding agents. Each skill encodes one phase of the software lifecycle,
@@ -16,25 +22,6 @@ The catalog is plain Markdown, portable across OpenCode, Claude Code, Codex,
 Cursor, and GitHub Copilot, and enforced by deterministic tooling in CI. The
 objective is not to give an agent more instructions. It is to give it a smaller
 number of precise contracts with gates that block premature completion.
-
-## Contents
-
-- [Overview](#overview)
-- [Why This Exists](#why-this-exists)
-- [Architecture](#architecture)
-- [Feature Highlights](#feature-highlights)
-- [Repository Layout](#repository-layout)
-- [Skill Catalog](#skill-catalog)
-- [Requirements](#requirements)
-- [Quick Start](#quick-start)
-- [Usage Examples](#usage-examples)
-- [Configuration and Integration](#configuration-and-integration)
-- [Verification and Quality Gates](#verification-and-quality-gates)
-- [Evaluations](#evaluations)
-- [Extending the Catalog](#extending-the-catalog)
-- [Enterprise Practices](#enterprise-practices)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
