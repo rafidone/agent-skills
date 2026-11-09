@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node 20+](https://img.shields.io/badge/node-20%2B-brightgreen)](package.json)
 
-[Overview](#overview) • [Why This Exists](#why-this-exists) • [Architecture](#architecture) • [Skills Catalog](#skill-catalog) • [Quick Start](#quick-start) • [Enterprise](#enterprise-practices)
+[Overview](#overview) • [Quick Start](#quick-start) • [Why This Exists](#why-this-exists) • [Architecture](#architecture) • [Skills Catalog](#skill-catalog) • [Enterprise](#enterprise-practices)
 
 </div>
 
@@ -42,6 +42,116 @@ Agent Skills supplies that contract once per phase and makes it portable:
 | Tested behavior | Trigger evals for every skill and behavioral evals for the core set |
 | Host portability | One canonical source, thin adapters, no forked procedures |
 | Supply-chain minimalism | Pure Markdown and dependency-free Node.js scripts |
+
+## Quick Start
+
+### 1. Install with npx
+
+The fastest path installs the catalog into the current project:
+
+```bash
+npx skills add rafidone/agent-skills
+```
+
+The installer copies every skill into the discovery paths your host reads. To
+target a specific host or directory with the bundled runner:
+
+```bash
+npx agent-skills add rafidone/agent-skills --host opencode
+npx agent-skills add rafidone/agent-skills --host claude --dir /path/to/project
+npx agent-skills add --host all --personal
+```
+
+Run `npx agent-skills --help` for all flags, or `npx agent-skills list` to see
+the bundled skills.
+
+### 2. Clone the Catalog
+
+Choose a stable location. Other projects link to it rather than copying, so
+updates arrive with a single `git pull`.
+
+```bash
+git clone https://github.com/rafidone/agent-skills.git
+cd agent-skills
+```
+
+### 3. Install for Your Host
+
+OpenCode discovers a directory of skills, so one relative symlink installs the
+whole catalog:
+
+```bash
+mkdir -p .opencode
+ln -sfn ../skills .opencode/skills
+```
+
+Claude Code and Codex discover one directory per skill:
+
+```bash
+mkdir -p .claude/skills
+for skill in skills/*/; do
+  ln -sfn "../../$skill" ".claude/skills/$(basename "$skill")"
+done
+```
+
+To install into a different project, point at this checkout explicitly:
+
+```bash
+AGENT_SKILLS="$HOME/src/agent-skills"
+cd /path/to/your/project
+mkdir -p .opencode
+ln -sfn "$AGENT_SKILLS/skills" .opencode/skills
+```
+
+The complete matrix, including personal installs, Windows notes, updating, and
+removal, is in [`docs/installation.md`](docs/installation.md).
+
+### 4. Verify the Installation
+
+Run the repository gates:
+
+```bash
+node scripts/validate-skills.js
+node scripts/validate-repo.js
+node --test scripts/**/*.test.js
+node scripts/run-evals.js --min-rank1 85
+```
+
+Expected summary lines:
+
+```text
+11 skills, 0 errors, 0 warnings
+6 checks passed, 0 errors
+# tests 22
+# pass 22
+# fail 0
+Trigger tier: 33 positive prompts, 33 ranked first (100.0 percent), 0 failures
+```
+
+Confirm a specific host sees the catalog:
+
+```bash
+readlink -f .opencode/skills
+ls .opencode/skills/*/SKILL.md
+```
+
+### 5. Run Your First Routed Task
+
+Open a session in the project and submit a normal feature request:
+
+```text
+Add saved searches. Users can save the current search, list their saved
+searches, re-run one, and delete one.
+```
+
+A correctly routed agent does not start editing files. It announces
+`spec-driven-development`, writes a short spec, then moves through planning,
+incremental implementation, TDD, review, and commit. If it jumps straight to
+code, force the route explicitly:
+
+```text
+Use the using-agent-skills skill to choose the right workflow for this task.
+```
 
 ## Why This Exists
 
@@ -230,116 +340,6 @@ linter.
 
 The skills themselves have no runtime dependencies. Node.js is required only for
 the repository's own checks.
-
-## Quick Start
-
-### 1. Install with npx
-
-The fastest path installs the catalog into the current project:
-
-```bash
-npx skills add rafidone/agent-skills
-```
-
-The installer copies every skill into the discovery paths your host reads. To
-target a specific host or directory with the bundled runner:
-
-```bash
-npx agent-skills add rafidone/agent-skills --host opencode
-npx agent-skills add rafidone/agent-skills --host claude --dir /path/to/project
-npx agent-skills add --host all --personal
-```
-
-Run `npx agent-skills --help` for all flags, or `npx agent-skills list` to see
-the bundled skills.
-
-### 2. Clone the Catalog
-
-Choose a stable location. Other projects link to it rather than copying, so
-updates arrive with a single `git pull`.
-
-```bash
-git clone https://github.com/rafidone/agent-skills.git
-cd agent-skills
-```
-
-### 3. Install for Your Host
-
-OpenCode discovers a directory of skills, so one relative symlink installs the
-whole catalog:
-
-```bash
-mkdir -p .opencode
-ln -sfn ../skills .opencode/skills
-```
-
-Claude Code and Codex discover one directory per skill:
-
-```bash
-mkdir -p .claude/skills
-for skill in skills/*/; do
-  ln -sfn "../../$skill" ".claude/skills/$(basename "$skill")"
-done
-```
-
-To install into a different project, point at this checkout explicitly:
-
-```bash
-AGENT_SKILLS="$HOME/src/agent-skills"
-cd /path/to/your/project
-mkdir -p .opencode
-ln -sfn "$AGENT_SKILLS/skills" .opencode/skills
-```
-
-The complete matrix, including personal installs, Windows notes, updating, and
-removal, is in [`docs/installation.md`](docs/installation.md).
-
-### 4. Verify the Installation
-
-Run the repository gates:
-
-```bash
-node scripts/validate-skills.js
-node scripts/validate-repo.js
-node --test scripts/**/*.test.js
-node scripts/run-evals.js --min-rank1 85
-```
-
-Expected summary lines:
-
-```text
-11 skills, 0 errors, 0 warnings
-6 checks passed, 0 errors
-# tests 22
-# pass 22
-# fail 0
-Trigger tier: 33 positive prompts, 33 ranked first (100.0 percent), 0 failures
-```
-
-Confirm a specific host sees the catalog:
-
-```bash
-readlink -f .opencode/skills
-ls .opencode/skills/*/SKILL.md
-```
-
-### 5. Run Your First Routed Task
-
-Open a session in the project and submit a normal feature request:
-
-```text
-Add saved searches. Users can save the current search, list their saved
-searches, re-run one, and delete one.
-```
-
-A correctly routed agent does not start editing files. It announces
-`spec-driven-development`, writes a short spec, then moves through planning,
-incremental implementation, TDD, review, and commit. If it jumps straight to
-code, force the route explicitly:
-
-```text
-Use the using-agent-skills skill to choose the right workflow for this task.
-```
 
 ## Usage Examples
 
